@@ -15,3 +15,4 @@ public class Player {
         this.quickRating = quickRating;
     }
 }
+
