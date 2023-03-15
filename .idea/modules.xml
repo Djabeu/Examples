@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Examples.iml" filepath="$PROJECT_DIR$/.idea/Examples.iml" />
       <module fileurl="file://$PROJECT_DIR$/HtmlUnitScraper/HtmlUnitScraper.iml" filepath="$PROJECT_DIR$/HtmlUnitScraper/HtmlUnitScraper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JSoupScraper.iml" filepath="$PROJECT_DIR$/JSoupScraper.iml" />
     </modules>
   </component>
 </project>
