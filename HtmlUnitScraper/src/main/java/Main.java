@@ -1,12 +1,8 @@
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlTable;
+import com.gargoylesoftware.htmlunit.html.*;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -14,36 +10,35 @@ public class Main {
         WebClient client = new WebClient();
         client.getOptions().setJavaScriptEnabled(false);
         client.getOptions().setCssEnabled(false);
-        HtmlPage searchPage = client.getPage("https://new.uschess.org/player-search");
-        HtmlForm form = (HtmlForm) searchPage.getByXPath("//form").get(0);
-        HtmlInput displayNameField = form.getInputByName("display_name");
-        HtmlInput submitButton = form.getInputByName("op");
-        displayNameField.type("Smith");
-        HtmlPage resultsPage = submitButton.click();
 
-        List<Player> players = parseResults(resultsPage);
+        HtmlPage searchPage = client.getPage("https://www.lego.com/pl-pl/categories/sales-and-deals?page=2&sort.key=PRICE&sort.direction=DESC&filters.i0.key=variants.attributes.availabilityStatus.zxx-PL&filters.i0.values.i0=%22E_AVAILABLE%22&inStockOnly=1&offset=0");
+        HtmlUnorderedList htmlUnorderedList = searchPage.getFirstByXPath("//*[@id=\"product-listing-grid\"]");
 
-        for (Player player : players) {
-            System.out.println(player);
+        DomNodeList<HtmlElement> elementsByTagName = htmlUnorderedList.getElementsByTagName("li");
+
+        ArrayList<HtmlElement> legoSets = new ArrayList<>();
+
+        for (HtmlElement element : elementsByTagName) {
+            if (element.getAttributes().getLength() == 2)
+                legoSets.add(element);
         }
+
+        for (HtmlElement htmlElement : legoSets) {
+            DomElement nameSpan = htmlElement.getFirstByXPath("./article/h3/a/span");
+            String name = nameSpan.getTextContent();
+            DomElement priceSpan = htmlElement.getFirstByXPath("./article/div[2]/span[2]");
+            String price = priceSpan.getTextContent();
+            DomElement discountSpan = htmlElement.getFirstByXPath("./article/div[2]/span[3]/span");
+            String discount = discountSpan.getTextContent();
+
+            System.out.println(name);
+            System.out.println(price);
+            System.out.println(discount);
+
+            System.out.println();
+        }
+
     }
 
-    private static List<Player> parseResults(HtmlPage resultsPage) {
-        HtmlTable table = (HtmlTable) resultsPage.getByXPath("//table").get(0);
-
-        return table.getBodies().get(0).getRows().stream()
-                .map(r -> {
-                    String rating = r.getCell(2).getTextContent();
-                    String qRating = r.getCell(3).getTextContent();
-
-                    return new Player(
-                            r.getCell(0).getTextContent(),
-                            r.getCell(1).getTextContent(),
-                            rating.length() == 0 ? null : Integer.parseInt(rating),
-                            qRating.length() == 0 ? null : Integer.parseInt(qRating)
-                            );
-
-                }).collect(Collectors.toList());
-    }
 }
 
