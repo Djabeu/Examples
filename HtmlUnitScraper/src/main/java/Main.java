@@ -3,9 +3,35 @@ import com.gargoylesoftware.htmlunit.html.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        getCartoonsFrom9gag();
+    }
+
+    private static void getCartoonsFrom9gag() throws IOException {
+
+        WebClient client = new WebClient();
+        client.getOptions().setJavaScriptEnabled(true);
+        client.getOptions().setThrowExceptionOnScriptError(false);
+        client.getOptions().setCssEnabled(false);
+
+        HtmlPage postsPage = client.getPage("https://9gag.com/u/srmaryhermanngo/posts");
+        String source = postsPage.getWebResponse().getContentAsString();
+        List<HtmlElement> posts = postsPage.getByXPath("//div[contains(@id, 'page')]");
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        System.out.println();
+
+    }
+
+    private static void getLegoOffers() throws IOException {
 
         WebClient client = new WebClient();
         client.getOptions().setJavaScriptEnabled(false);
